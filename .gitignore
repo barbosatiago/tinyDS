@@ -1,0 +1,29 @@
+# Ignorar arquivos de build
+/build/
+/bin/
+/obj/
+
+# Ignorar arquivos de IDEs comuns (Eclipse, VSCode, etc)
+.vscode/
+.idea/
+*.swp
+*.swo
+.project
+.cproject
+.settings/
+
+# Ignorar dependências e arquivos temporários
+*.d
+*.o
+*.a
+*.elf
+*.hex
+*.bin
+*.map
+*.elf
+*.srec
+*.zip
+*.tar.gz
+
+# Ignorar arquivos de log
+*.log
