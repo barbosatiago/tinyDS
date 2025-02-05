@@ -1,0 +1,22 @@
+---
+BasedOnStyle: Google
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+BreakBeforeBraces: Attach  # As chaves de abertura ficam na mesma linha que a declaração.
+BraceWrapping:
+  AfterFunction: false   # Não quebra linha após a declaração de funções.
+  AfterControlStatement: false   # Não quebra linha após estruturas de controle (if, for, etc.)
+  BeforeElse: false      # Não quebra linha antes do "else".
+  BeforeCatch: false     # Não quebra linha antes de "catch".
+  BeforeWhile: false     # Não quebra linha antes de "while".
+  AfterStruct: false     # Não quebra linha após structs.
+  AfterEnum: false       # Não quebra linha após enums.
+  AfterClass: false      # Não quebra linha após classes.
+ColumnLimit: 0  # Sem limite de coluna, mas pode ser configurado conforme necessário.
+AllowAllParametersOfDeclarationOnNextLine: false
+AlignAfterOpenBracket: Align
+AlignConsecutiveAssignments: true
+AlignConsecutiveDeclarations: true
+SpaceBeforeParens: ControlStatements  # Coloca um espaço antes dos parênteses em estruturas de controle (if, while, etc.).
+SpaceAfterCStyleCast: true
