@@ -62,6 +62,7 @@ bool tds_stack_push(tds_stack_t instance, const void *data) {
     }
 
     memcpy(new_node->data, data, instance->elements);
+    
     new_node->next = instance->top;
     instance->top = new_node;
     instance->size++;
@@ -69,6 +70,38 @@ bool tds_stack_push(tds_stack_t instance, const void *data) {
     printf("[LOG] Elemento inserido com sucesso! Tamanho atual da pilha: %u\n", instance->size);
     return true;
 }
+
+bool tds_stack_pop(tds_stack_t instance, void * data) {
+    if (!instance) {
+        printf("[ERRO] Pilha não inicializada!\n");
+        return false;
+    }
+
+    if (instance->size == 0) {
+        printf("[ERRO] Pilha está vazia!\n");
+        return false;
+    }
+
+    struct tds_stack_node_t *node_to_remove = instance->top;  // Nó que será removido
+
+    // Copia os dados do nó para o buffer de saída
+    memcpy(data, node_to_remove->data, instance->elements);
+
+    // Atualiza o topo da pilha
+    instance->top = node_to_remove->next;
+    
+    // Libera a memória do nó removido
+    free(node_to_remove->data);
+    free(node_to_remove);
+
+    instance->size--;
+
+    printf("[LOG] Elemento removido com sucesso! Tamanho atual da pilha: %u\n", instance->size);
+    
+    return true;
+}
+
+
 
 #ifdef __cplusplus
 }
