@@ -31,13 +31,22 @@ typedef struct tds_stack_instance_t* tds_stack_t;
 /* Function Prototypes ------------------------------------------------------*/
 
 struct tds_stack_instance_t {
-    void*                        data;
-    struct tds_stack_instance_t* next;
-    uint32_t                     capacity;
+    struct tds_stack_node_t* top;  // Aponta para o nó do topo da pilha
+    uint32_t capacity;             // Capacidade máxima da pilha
+    uint32_t elements;             // Tamanho de um único elemento (bytes)
+    uint32_t size;                 // Quantidade atual de elementos na pilha
 };
 
-tds_stack_t tds_stack_create(uint32_t capacity);
-uint32_t tds_stack_capacity(tds_stack_t instance);
+struct tds_stack_node_t {
+    void* data;                     // Armazena o dado genérico
+    struct tds_stack_node_t* next;   // Ponteiro para o próximo nó
+};
+
+tds_stack_t tds_stack_create(uint32_t capacity, size_t element_size);
+bool tds_stack_push(tds_stack_t instance, const void * data);
+
+
+
 
 #ifdef __cplusplus
 }
