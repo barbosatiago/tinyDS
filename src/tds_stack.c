@@ -115,6 +115,16 @@ bool tds_stack_empty(tds_stack_t instance) {
     return is_empty;
 }
 
+bool tds_stack_peek(tds_stack_t instance, void * data) {
+    if (!instance) {
+        printf("[LOG] Pilha não existe\n");
+        return false;
+    }
+
+    memcpy(data, instance->top->data, instance->elements);
+    return true;
+}
+
 
 
 
