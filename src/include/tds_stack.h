@@ -44,6 +44,7 @@ struct tds_stack_node_t {
 
 tds_stack_t tds_stack_create(uint32_t capacity, size_t element_size);
 bool tds_stack_push(tds_stack_t instance, const void * data);
+bool tds_stack_empty(tds_stack_t instance);
 
 
 

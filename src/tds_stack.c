@@ -102,6 +102,21 @@ bool tds_stack_pop(tds_stack_t instance, void * data) {
 }
 
 
+bool tds_stack_empty(tds_stack_t instance) {
+    if (!instance) {
+        printf("[LOG] Pilha não existe\n");
+        return true;  // Consideramos uma pilha inexistente como "vazia"
+    }
+
+    bool is_empty = (instance->size == 0);
+    
+    printf("A pilha está %s\n", is_empty == 0 ? "com dados\n" : "vazia\n");
+
+    return is_empty;
+}
+
+
+
 
 #ifdef __cplusplus
 }

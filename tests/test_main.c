@@ -10,7 +10,7 @@ int main() {
     // Chame suas funções aqui!
 
     printf("Todos os testes passaram!\n");
-
+ 
     tds_stack_t pilha1 = tds_stack_create(10);
 
     printf("%ld\n", sizeof(pilha1));
