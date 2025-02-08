@@ -31,23 +31,25 @@ typedef struct tds_stack_instance_t* tds_stack_t;
 /* Function Prototypes ------------------------------------------------------*/
 
 struct tds_stack_instance_t {
-    struct tds_stack_node_t* top;  // Aponta para o nó do topo da pilha
-    uint32_t capacity;             // Capacidade máxima da pilha
-    uint32_t elements;             // Tamanho de um único elemento (bytes)
-    uint32_t size;                 // Quantidade atual de elementos na pilha
+    struct tds_stack_node_t* top;       // Aponta para o nó do topo da pilha
+    uint32_t                 capacity;  // Capacidade máxima da pilha
+    uint32_t                 elements;  // Tamanho de um único elemento (bytes)
+    uint32_t                 size;      // Quantidade atual de elementos na pilha
 };
 
 struct tds_stack_node_t {
-    void* data;                     // Armazena o dado genérico
-    struct tds_stack_node_t* next;   // Ponteiro para o próximo nó
+    void*                    data;  // Armazena o dado genérico
+    struct tds_stack_node_t* next;  // Ponteiro para o próximo nó
 };
 
 tds_stack_t tds_stack_create(uint32_t capacity, size_t element_size);
-bool tds_stack_push(tds_stack_t instance, const void * data);
-bool tds_stack_empty(tds_stack_t instance);
-bool tds_stack_peek(tds_stack_t instance, void * data);
+bool        tds_stack_push(tds_stack_t instance, const void* data);
+bool        tds_stack_empty(tds_stack_t instance);
+bool        tds_stack_peek(tds_stack_t instance, void* data);
+bool        tds_stack_pop(tds_stack_t instance, void* data);
+bool tds_stack_destroy(tds_stack_t instance);
 
-
+static bool tds_stack_remove_pop(tds_stack_t instance);
 
 #ifdef __cplusplus
 }

@@ -20,16 +20,16 @@ extern "C" {
 
 tds_stack_t tds_stack_create(uint32_t capacity, size_t element_size) {
     printf("[LOG] Criando pilha com capacidade %u e tamanho de elemento %zu bytes...\n", capacity, element_size);
-    
+
     tds_stack_t stack = (tds_stack_t) malloc(sizeof(struct tds_stack_instance_t));
     if (!stack) {
         printf("[ERRO] Falha ao alocar memória para a pilha.\n");
         return NULL;
     }
 
-    stack->top = NULL;
+    stack->top      = NULL;
     stack->capacity = capacity;
-    stack->size = 0;
+    stack->size     = 0;
     stack->elements = element_size;
 
     printf("[LOG] Pilha criada com sucesso!\n");
@@ -62,16 +62,16 @@ bool tds_stack_push(tds_stack_t instance, const void *data) {
     }
 
     memcpy(new_node->data, data, instance->elements);
-    
+
     new_node->next = instance->top;
-    instance->top = new_node;
+    instance->top  = new_node;
     instance->size++;
 
     printf("[LOG] Elemento inserido com sucesso! Tamanho atual da pilha: %u\n", instance->size);
     return true;
 }
 
-bool tds_stack_pop(tds_stack_t instance, void * data) {
+bool tds_stack_pop(tds_stack_t instance, void *data) {
     if (!instance) {
         printf("[ERRO] Pilha não inicializada!\n");
         return false;
@@ -89,7 +89,7 @@ bool tds_stack_pop(tds_stack_t instance, void * data) {
 
     // Atualiza o topo da pilha
     instance->top = node_to_remove->next;
-    
+
     // Libera a memória do nó removido
     free(node_to_remove->data);
     free(node_to_remove);
@@ -97,10 +97,9 @@ bool tds_stack_pop(tds_stack_t instance, void * data) {
     instance->size--;
 
     printf("[LOG] Elemento removido com sucesso! Tamanho atual da pilha: %u\n", instance->size);
-    
+
     return true;
 }
-
 
 bool tds_stack_empty(tds_stack_t instance) {
     if (!instance) {
@@ -109,13 +108,13 @@ bool tds_stack_empty(tds_stack_t instance) {
     }
 
     bool is_empty = (instance->size == 0);
-    
+
     printf("A pilha está %s\n", is_empty == 0 ? "com dados\n" : "vazia\n");
 
     return is_empty;
 }
 
-bool tds_stack_peek(tds_stack_t instance, void * data) {
+bool tds_stack_peek(tds_stack_t instance, void *data) {
     if (!instance) {
         printf("[LOG] Pilha não existe\n");
         return false;
@@ -125,8 +124,44 @@ bool tds_stack_peek(tds_stack_t instance, void * data) {
     return true;
 }
 
+static bool tds_stack_remove_pop(tds_stack_t instance) {
+    if (!instance) {
+        printf("[ERRO] Pilha não inicializada\n");
+        return false;
+    }
 
+    if (instance->size == 0) {
+        printf("[ERRO] Pilha esta vazia\n");
+        return false;
+    }
 
+    struct tds_stack_node_t *node_temp = instance->top;
+    instance->top                      = node_temp->next;
+    free(node_temp->data);
+    free(node_temp);
+    instance->size--;
+
+    printf("[LOG] Elemento removido com sucesso! Tamanho atual da pilha: %u\n", instance->size);
+
+    return true;
+}
+
+bool tds_stack_destroy(tds_stack_t instance) {
+    if (!instance) {
+        printf("[ERRO] Pilha nao inicializada");
+        return false;
+    }
+
+    if (instance->size > 0) {
+        while (!instance->top) {
+            tds_stack_remove_pop(instance);
+        }
+    }
+
+    free(instance);
+    printf("[LOG] Pilha apagada com sucesso\n");
+    return true;
+}
 
 #ifdef __cplusplus
 }
