@@ -1,9 +1,9 @@
 /******************************************************************************
  * File: stack.c
  * Author: Tiago Barbosa
- * Description: Implementação de uma stack (pilha) para sistemas embarcados.
- *              Esta implementação é modular e escalável, podendo ser usada
- *              em diferentes hardwares, incluindo microcontroladores como o ESP32S3.
+ * Description: Implementation of a stack (LIFO) for embedded systems.
+ *              This implementation is modular and scalable, suitable for different
+ *              hardware platforms, including microcontrollers like the ESP32S3.
  * Created on: 04/02/2025
  * Version:
  ******************************************************************************/
@@ -18,12 +18,22 @@ extern "C" {
 /* Includes -----------------------------------------------------------------*/
 #include "tds_stack.h"
 
+/**
+ * @brief Creates a new stack instance.
+ *
+ * This function initializes a stack with the specified capacity and element size.
+ * It allocates memory for the stack structure and the stack elements.
+ *
+ * @param capacity The maximum number of elements the stack can hold.
+ * @param element_size The size of each element in bytes.
+ * @return tds_stack_t A handle to the created stack instance.
+ */
 tds_stack_t tds_stack_create(uint32_t capacity, size_t element_size) {
-    printf("[LOG] Criando pilha com capacidade %u e tamanho de elemento %zu bytes...\n", capacity, element_size);
+    printf("[LOG] Creating stack with capacity %u and element size of %zu bytes...\n", capacity, element_size);
 
     tds_stack_t stack = (tds_stack_t) malloc(sizeof(struct tds_stack_instance_t));
     if (!stack) {
-        printf("[ERRO] Falha ao alocar memória para a pilha.\n");
+        printf("[ERROR] Failed to allocate memory for the stack.\n");
         return NULL;
     }
 
@@ -32,31 +42,42 @@ tds_stack_t tds_stack_create(uint32_t capacity, size_t element_size) {
     stack->size     = 0;
     stack->elements = element_size;
 
-    printf("[LOG] Pilha criada com sucesso!\n");
+    printf("[LOG] Stack created successfully!\n");
     return stack;
 }
 
+/**
+ * @brief Pushes a new element onto the stack.
+ *
+ * Adds a new element to the top of the stack. If the stack is full, the operation
+ * fails and returns false.
+ *
+ * @param instance The stack instance.
+ * @param data Pointer to the data to be pushed onto the stack.
+ * @return true If the element was successfully pushed onto the stack.
+ * @return false If the stack is full and the element cannot be added.
+ */
 bool tds_stack_push(tds_stack_t instance, const void *data) {
     if (!instance) {
-        printf("[ERRO] Pilha não inicializada!\n");
+        printf("[ERROR] Stack is not initialized!\n");
         return false;
     }
     if (instance->size >= instance->capacity) {
-        printf("[ERRO] Pilha cheia! Capacidade máxima atingida (%u elementos).\n", instance->capacity);
+        printf("[ERROR] Stack is full! Maximum capacity reached (%u elements).\n", instance->capacity);
         return false;
     }
 
-    printf("[LOG] Inserindo elemento %u na pilha...\n", instance->size + 1);
+    printf("[LOG] Inserting element %u into the stack...\n", instance->size + 1);
 
     struct tds_stack_node_t *new_node = (struct tds_stack_node_t *) malloc(sizeof(struct tds_stack_node_t));
     if (!new_node) {
-        printf("[ERRO] Falha ao alocar memória para novo nó.\n");
+        printf("[ERROR] Failed to allocate memory for new node.\n");
         return false;
     }
 
     new_node->data = malloc(instance->elements);
     if (!new_node->data) {
-        printf("[ERRO] Falha ao alocar memória para o dado do nó.\n");
+        printf("[ERROR] Failed to allocate memory for the node data.\n");
         free(new_node);
         return false;
     }
@@ -67,56 +88,85 @@ bool tds_stack_push(tds_stack_t instance, const void *data) {
     instance->top  = new_node;
     instance->size++;
 
-    printf("[LOG] Elemento inserido com sucesso! Tamanho atual da pilha: %u\n", instance->size);
+    printf("[LOG] Element inserted successfully! Current stack size: %u\n", instance->size);
     return true;
 }
 
+/**
+ * @brief Pops the top element from the stack.
+ *
+ * Removes the top element from the stack and stores its data in the provided pointer.
+ *
+ * @param instance The stack instance.
+ * @param data Pointer where the popped element's data will be stored.
+ * @return true If the element was successfully popped from the stack.
+ * @return false If the stack is empty.
+ */
 bool tds_stack_pop(tds_stack_t instance, void *data) {
     if (!instance) {
-        printf("[ERRO] Pilha não inicializada!\n");
+        printf("[ERROR] Stack is not initialized!\n");
         return false;
     }
 
     if (instance->size == 0) {
-        printf("[ERRO] Pilha está vazia!\n");
+        printf("[ERROR] Stack is empty!\n");
         return false;
     }
 
-    struct tds_stack_node_t *node_to_remove = instance->top;  // Nó que será removido
+    struct tds_stack_node_t *node_to_remove = instance->top;  // Node to be removed
 
-    // Copia os dados do nó para o buffer de saída
+    // Copy the data from the node to the output buffer
     memcpy(data, node_to_remove->data, instance->elements);
 
-    // Atualiza o topo da pilha
+    // Update the stack top
     instance->top = node_to_remove->next;
 
-    // Libera a memória do nó removido
+    // Free the memory of the removed node
     free(node_to_remove->data);
     free(node_to_remove);
 
     instance->size--;
 
-    printf("[LOG] Elemento removido com sucesso! Tamanho atual da pilha: %u\n", instance->size);
+    printf("[LOG] Element removed successfully! Current stack size: %u\n", instance->size);
 
     return true;
 }
 
+/**
+ * @brief Checks if the stack is empty.
+ *
+ * Determines if the stack has any elements stored.
+ *
+ * @param instance The stack instance.
+ * @return true If the stack is empty (contains no elements).
+ * @return false If the stack has one or more elements.
+ */
 bool tds_stack_empty(tds_stack_t instance) {
     if (!instance) {
-        printf("[LOG] Pilha não existe\n");
-        return true;  // Consideramos uma pilha inexistente como "vazia"
+        printf("[LOG] Stack does not exist\n");
+        return true;  // We consider a non-existing stack as "empty"
     }
 
     bool is_empty = (instance->size == 0);
 
-    printf("A pilha está %s\n", is_empty == 0 ? "com dados\n" : "vazia\n");
+    printf("The stack is %s\n", is_empty == 0 ? "not empty\n" : "empty\n");
 
     return is_empty;
 }
 
+/**
+ * @brief Peeks at the top element of the stack without removing it.
+ *
+ * Retrieves the data from the top of the stack, but does not alter the stack.
+ *
+ * @param instance The stack instance.
+ * @param data Pointer where the top element's data will be stored.
+ * @return true If the top element was successfully retrieved.
+ * @return false If the stack is empty.
+ */
 bool tds_stack_peek(tds_stack_t instance, void *data) {
     if (!instance) {
-        printf("[LOG] Pilha não existe\n");
+        printf("[LOG] Stack does not exist\n");
         return false;
     }
 
@@ -124,14 +174,24 @@ bool tds_stack_peek(tds_stack_t instance, void *data) {
     return true;
 }
 
+/**
+ * @brief Removes and pops the top element from the stack (internal use only).
+ *
+ * This function is used internally to remove the top node of the stack and
+ * perform necessary clean-up. It should not be used directly by users.
+ *
+ * @param instance The stack instance.
+ * @return true If the element was successfully removed.
+ * @return false If the stack was empty.
+ */
 static bool tds_stack_remove_pop(tds_stack_t instance) {
     if (!instance) {
-        printf("[ERRO] Pilha não inicializada\n");
+        printf("[ERROR] Stack is not initialized\n");
         return false;
     }
 
     if (instance->size == 0) {
-        printf("[ERRO] Pilha esta vazia\n");
+        printf("[ERROR] Stack is empty\n");
         return false;
     }
 
@@ -141,14 +201,23 @@ static bool tds_stack_remove_pop(tds_stack_t instance) {
     free(node_temp);
     instance->size--;
 
-    printf("[LOG] Elemento removido com sucesso! Tamanho atual da pilha: %u\n", instance->size);
+    printf("[LOG] Element removed successfully! Current stack size: %u\n", instance->size);
 
     return true;
 }
 
+/**
+ * @brief Destroys the stack and frees all allocated memory.
+ *
+ * This function will release memory used for the stack structure and all of its nodes.
+ *
+ * @param instance The stack instance.
+ * @return true If the stack was successfully destroyed.
+ * @return false If there was an error during the destruction process.
+ */
 bool tds_stack_destroy(tds_stack_t instance) {
     if (!instance) {
-        printf("[ERRO] Pilha nao inicializada");
+        printf("[ERROR] Stack not initialized");
         return false;
     }
 
@@ -159,7 +228,7 @@ bool tds_stack_destroy(tds_stack_t instance) {
     }
 
     free(instance);
-    printf("[LOG] Pilha apagada com sucesso\n");
+    printf("[LOG] Stack destroyed successfully\n");
     return true;
 }
 
