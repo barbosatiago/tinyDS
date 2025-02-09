@@ -16,7 +16,7 @@
 #endif()
 
 cmake_minimum_required(VERSION 3.16)
-project(DSLibrary C)
+project(DSLibrary VERSION 1.0.0)
 
 # Adicionar diretórios de código e testes
 add_subdirectory(src)
