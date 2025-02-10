@@ -38,8 +38,12 @@ struct tds_queue_node_t {
 };
 
 tds_queue_t tds_queue_create(uint32_t capacity, size_t element_size) {
-    printf("[LOG] Creating queue with capacity %u and element size of %zu bytes...\n", capacity, element_size);
+    if (capacity == 0 || element_size == 0) {
+        printf("[LOG] Capacity is invalid!\n");
+        return NULL;
+    }
 
+    printf("[LOG] Creating queue with capacity %u and element size of %zu bytes...\n", capacity, element_size);
     tds_queue_t new_queue = (tds_queue_t) malloc(sizeof(struct tds_queue_instance_t));
 
     if (!new_queue) {
@@ -68,16 +72,22 @@ bool tds_queue_enqueue(tds_queue_t instance, const void* data) {
         return false;
     }
 
+    if (!data) {
+        printf("[ERROR] Data pointer is NULL!\n");
+        return false;
+    }
+
     instance->size += 1;
     printf("[LOG] Inserting element %u into the queue...\n", instance->size);
 
     struct tds_queue_node_t* new_node = (struct tds_queue_node_t*) malloc(sizeof(struct tds_queue_node_t));
-    if(!new_node) {
+    if (!new_node) {
         printf("[ERROR] Failed to allocate memory for new node.\n");
         return false;
     }
 
     new_node->data = malloc(instance->elements);
+    new_node->next = NULL;
     if (!new_node->data) {
         printf("[ERROR] Failed to allocate memory for the node data.\n");
         free(new_node);
@@ -85,17 +95,51 @@ bool tds_queue_enqueue(tds_queue_t instance, const void* data) {
     }
     memcpy(new_node->data, data, instance->elements);
 
-    struct tds_queue_node_t * temp = instance->tail;
-
-    // instance->tail = new_node;
-    // new_node->next = temp
-    
-    // new_node->next = instance->head;
-    // instance->tail = new_node;
+    if (!instance->head) {
+        instance->head = new_node;
+        instance->tail = new_node;
+    } else {
+        instance->tail->next = new_node;
+        instance->tail       = new_node;
+    }
 
     printf("[LOG] Element inserted sucessfully! Current queue size: %u\n", instance->size);
     return true;
+}
 
+bool tds_queue_dequeue(tds_queue_t instance, void* data) {
+    if (!instance) {
+        printf("[ERROR] Queue is not initialized!\n");
+        return false;
+    }
+
+    if (!data) {
+        printf("[ERROR] Data pointer is NULL!\n");
+        return false;
+    }
+
+    if (instance->size == 0) {
+        printf("[ERROR] Queue is empty!\n");
+        return false;
+    }
+
+    struct tds_queue_node_t* temp = instance->head;
+    memcpy(data, temp->data, instance->elements);
+
+    instance->head = instance->head->next;
+
+    if (!instance->head) {
+        instance->tail = NULL;
+    }
+
+    free(temp->data);
+    free(temp);
+
+    instance->size--;
+
+    printf("[LOG] Element removed sucessfully! Current queue stack size: %u\n", instance->size);
+
+    return true;
 }
 
 #ifdef __cplusplus

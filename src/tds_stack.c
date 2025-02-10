@@ -124,7 +124,7 @@ bool tds_stack_pop(tds_stack_t instance, void *data) {
     // Free the memory of the removed node
     free(node_to_remove->data);
     free(node_to_remove);
-
+ 
     instance->size--;
 
     printf("[LOG] Element removed successfully! Current stack size: %u\n", instance->size);

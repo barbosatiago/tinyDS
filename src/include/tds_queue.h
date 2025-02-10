@@ -38,10 +38,10 @@ typedef struct tds_queue_instance_t* tds_queue_t;
 
 tds_queue_t tds_queue_create(uint32_t capacity, size_t element_size);
 bool tds_queue_enqueue(tds_queue_t instance, const void* data);
-bool tds_queue_dequeue(tds_queue_t instace, void* data);
-bool tds_queue_empty(tds_queue_t instance);
-bool tds_queue_peek(tds_queue_t instance, void *data);
-int  tds_queue_size(tds_queue_t instance);
+bool tds_queue_dequeue(tds_queue_t instance, void* data);
+// bool tds_queue_empty(tds_queue_t instance);
+// bool tds_queue_peek(tds_queue_t instance, void *data);
+// int  tds_queue_size(tds_queue_t instance);
 
 #ifdef __cplusplus
 }
