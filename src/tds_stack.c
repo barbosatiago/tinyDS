@@ -29,11 +29,11 @@ extern "C" {
  * @return tds_stack_t A handle to the created stack instance.
  */
 tds_stack_t tds_stack_create(uint32_t capacity, size_t element_size) {
-    printf("[LOG] Creating stack with capacity %u and element size of %zu bytes...\n", capacity, element_size);
+    //printf("[LOG] Creating stack with capacity %u and element size of %zu bytes...\n", capacity, element_size);
 
     tds_stack_t stack = (tds_stack_t) malloc(sizeof(struct tds_stack_instance_t));
     if (!stack) {
-        printf("[ERROR] Failed to allocate memory for the stack.\n");
+        //printf("[ERROR] Failed to allocate memory for the stack.\n");
         return NULL;
     }
 
@@ -42,7 +42,7 @@ tds_stack_t tds_stack_create(uint32_t capacity, size_t element_size) {
     stack->size     = 0;
     stack->elements = element_size;
 
-    printf("[LOG] Stack created successfully!\n");
+    //printf("[LOG] Stack created successfully!\n");
     return stack;
 }
 
@@ -59,25 +59,25 @@ tds_stack_t tds_stack_create(uint32_t capacity, size_t element_size) {
  */
 bool tds_stack_push(tds_stack_t instance, const void *data) {
     if (!instance) {
-        printf("[ERROR] Stack is not initialized!\n");
+        //printf("[ERROR] Stack is not initialized!\n");
         return false;
     }
     if (instance->size >= instance->capacity) {
-        printf("[ERROR] Stack is full! Maximum capacity reached (%u elements).\n", instance->capacity);
+        //printf("[ERROR] Stack is full! Maximum capacity reached (%u elements).\n", instance->capacity);
         return false;
     }
 
-    printf("[LOG] Inserting element %u into the stack...\n", instance->size + 1);
+    //printf("[LOG] Inserting element %u into the stack...\n", instance->size + 1);
 
     struct tds_stack_node_t *new_node = (struct tds_stack_node_t *) malloc(sizeof(struct tds_stack_node_t));
     if (!new_node) {
-        printf("[ERROR] Failed to allocate memory for new node.\n");
+        //printf("[ERROR] Failed to allocate memory for new node.\n");
         return false;
     }
 
     new_node->data = malloc(instance->elements);
     if (!new_node->data) {
-        printf("[ERROR] Failed to allocate memory for the node data.\n");
+        //printf("[ERROR] Failed to allocate memory for the node data.\n");
         free(new_node);
         return false;
     }
@@ -88,7 +88,7 @@ bool tds_stack_push(tds_stack_t instance, const void *data) {
     instance->top  = new_node;
     instance->size++;
 
-    printf("[LOG] Element inserted successfully! Current stack size: %u\n", instance->size);
+    //printf("[LOG] Element inserted successfully! Current stack size: %u\n", instance->size);
     return true;
 }
 
@@ -104,12 +104,12 @@ bool tds_stack_push(tds_stack_t instance, const void *data) {
  */
 bool tds_stack_pop(tds_stack_t instance, void *data) {
     if (!instance) {
-        printf("[ERROR] Stack is not initialized!\n");
+        //printf("[ERROR] Stack is not initialized!\n");
         return false;
     }
 
     if (instance->size == 0) {
-        printf("[ERROR] Stack is empty!\n");
+        //printf("[ERROR] Stack is empty!\n");
         return false;
     }
 
@@ -127,7 +127,7 @@ bool tds_stack_pop(tds_stack_t instance, void *data) {
  
     instance->size--;
 
-    printf("[LOG] Element removed successfully! Current stack size: %u\n", instance->size);
+    //printf("[LOG] Element removed successfully! Current stack size: %u\n", instance->size);
 
     return true;
 }
@@ -143,13 +143,13 @@ bool tds_stack_pop(tds_stack_t instance, void *data) {
  */
 bool tds_stack_empty(tds_stack_t instance) {
     if (!instance) {
-        printf("[LOG] Stack does not exist\n");
+        //printf("[LOG] Stack does not exist\n");
         return true;  // We consider a non-existing stack as "empty"
     }
 
     bool is_empty = (instance->size == 0);
 
-    printf("The stack is %s\n", is_empty == 0 ? "not empty\n" : "empty\n");
+    //printf("The stack is %s\n", is_empty == 0 ? "not empty\n" : "empty\n");
 
     return is_empty;
 }
@@ -166,7 +166,7 @@ bool tds_stack_empty(tds_stack_t instance) {
  */
 bool tds_stack_peek(tds_stack_t instance, void *data) {
     if (!instance) {
-        printf("[LOG] Stack does not exist\n");
+        //printf("[LOG] Stack does not exist\n");
         return false;
     }
 
@@ -186,12 +186,12 @@ bool tds_stack_peek(tds_stack_t instance, void *data) {
  */
 static bool tds_stack_remove_pop(tds_stack_t instance) {
     if (!instance) {
-        printf("[ERROR] Stack is not initialized\n");
+        //printf("[ERROR] Stack is not initialized\n");
         return false;
     }
 
     if (instance->size == 0) {
-        printf("[ERROR] Stack is empty\n");
+        //printf("[ERROR] Stack is empty\n");
         return false;
     }
 
@@ -200,8 +200,7 @@ static bool tds_stack_remove_pop(tds_stack_t instance) {
     free(node_temp->data);
     free(node_temp);
     instance->size--;
-
-    printf("[LOG] Element removed successfully! Current stack size: %u\n", instance->size);
+    //printf("[LOG] Element removed successfully! Current stack size: %u\n", instance->size);
 
     return true;
 }
@@ -217,7 +216,7 @@ static bool tds_stack_remove_pop(tds_stack_t instance) {
  */
 bool tds_stack_destroy(tds_stack_t instance) {
     if (!instance) {
-        printf("[ERROR] Stack not initialized");
+        //printf("[ERROR] Stack not initialized");
         return false;
     }
 
@@ -228,7 +227,7 @@ bool tds_stack_destroy(tds_stack_t instance) {
     }
 
     free(instance);
-    printf("[LOG] Stack destroyed successfully\n");
+    //printf("[LOG] Stack destroyed successfully\n");
     return true;
 }
 
