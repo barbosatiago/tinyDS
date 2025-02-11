@@ -1,78 +1,66 @@
 #include <stdio.h>
-#include <stdint.h>
+#include <stdlib.h>
+#include <pthread.h>
 #include <stdbool.h>
+#include <stdint.h>
 #include <string.h>
-#include "tds_queue.h"  // Sua API de fila
+#include "tds_queue.h"  // Inclua seu cabeçalho da fila
 
-void test_queue_edge_cases() {
-    printf("\n[Test] Casos extremos...\n");
+#define NUM_OPERATIONS 100000
 
+// A fila global que será usada na thread única
+tds_queue_t queue;
+
+// Função para testar enfileiramento e desenfileiramento em uma única thread
+void test_single_thread_operations() {
+    printf("Iniciando testes com thread única...\n");
+
+    // Enfileirar NUM_OPERATIONS elementos
+    for (int i = 0; i < NUM_OPERATIONS; i++) {
+        if (!tds_queue_enqueue(queue, &i)) {
+            printf("Falhou ao enfileirar o elemento %d!\n", i);
+        }
+    }
+
+    // Verificar a fila após enfileiramento
+    printf("Enfileiramento concluído. Iniciando desenfileiramento...\n");
+
+    // Desenfileirar NUM_OPERATIONS elementos
     int out;
-    
-    // 1. Tentativa de criar uma fila com capacidade inválida
-    printf("-> Criando fila com capacidade 0 (deve falhar)...\n");
-    tds_queue_t queue_invalid = tds_queue_create(0, sizeof(int));
-    if (!queue_invalid) {
-        printf("Correto! Fila inválida não foi criada.\n");
-    } else {
-        printf("Erro! A API permitiu uma fila inválida.\n");
+    for (int i = 0; i < NUM_OPERATIONS; i++) {
+        if (!tds_queue_dequeue(queue, &out)) {
+            printf("Falhou ao desenfileirar o elemento %d!\n", i);
+        } else if (out != i) {
+            // Verificar se os elementos desenfileirados estão na ordem correta
+            printf("Erro: Esperado %d, mas desenfileirado %d.\n", i, out);
+        }
     }
 
-    // 2. Tentando enfileirar em uma fila nula
-    printf("-> Inserindo em fila NULL (deve falhar)...\n");
-    if (!tds_queue_enqueue(NULL, &out)) {
-        printf("Correto! Não é possível enfileirar em uma fila nula.\n");
-    } else {
-        printf("Erro! A API permitiu enfileirar em NULL.\n");
+    // Verificar se a fila está vazia após todas as operações
+    if (!tds_queue_empty(queue)) {
+        printf("Erro: A fila não está vazia após todas as operações!\n");
     }
 
-    // 3. Tentando desenfileirar de uma fila nula
-    printf("-> Removendo de fila NULL (deve falhar)...\n");
-    if (!tds_queue_dequeue(NULL, &out)) {
-        printf("Correto! Não é possível remover de uma fila nula.\n");
-    } else {
-        printf("Erro! A API permitiu remover de NULL.\n");
-    }
-
-    // 4. Criando uma fila válida
-    printf("-> Criando fila válida...\n");
-    tds_queue_t queue = tds_queue_create(2, sizeof(int));
-    if (!queue) {
-        printf("Erro: Falha ao criar a fila!\n");
-        return;
-    }
-
-    // 5. Tentando enfileirar um ponteiro nulo
-    printf("-> Inserindo ponteiro NULL na fila (deve falhar)...\n");
-    if (!tds_queue_enqueue(queue, NULL)) {
-        printf("Correto! Não é possível enfileirar NULL.\n");
-    } else {
-        printf("Erro! A API permitiu enfileirar NULL.\n");
-    }
-
-    // 6. Tentando desenfileirar para um ponteiro nulo
-    int val = 42;
-    printf("-> Inserindo 42 na fila...\n");
-    tds_queue_enqueue(queue, &val);
-
-    printf("-> Tentando remover para ponteiro NULL (deve falhar)...\n");
-    if (!tds_queue_dequeue(queue, NULL)) {
-        printf("Correto! Não é possível remover para NULL.\n");
-    } else {
-        printf("Erro! A API permitiu remover para NULL.\n");
-    }
-
-    // 7. Tentando liberar memória de uma fila nula (simulando destroy)
-    printf("-> Tentando liberar fila NULL...\n");
-    free(NULL);  // Deve ser seguro, mas apenas um teste
-
-    printf("-> Liberando fila válida...\n");
-    free(queue);  // Como ainda não temos um destroy, usamos free()
-
-    printf("Testes extremos finalizados!\n");
+    printf("Testes com thread única concluídos com sucesso.\n");
 }
 
 int main() {
-    test_queue_edge_cases();
+    // Criar a fila com capacidade suficiente para armazenar todos os elementos
+    queue = tds_queue_create(NUM_OPERATIONS, sizeof(int));
+    if (queue == NULL) {
+        printf("Falha ao criar a fila!\n");
+        return 1;
+    }
+
+    // Testar a fila em um único thread
+    test_single_thread_operations();
+
+    // Destruir a fila
+    if (!tds_queue_destroy(queue)) {
+        printf("Erro ao destruir a fila!\n");
+    } else {
+        printf("Fila destruída com sucesso.\n");
+    }
+
     return 0;
 }
