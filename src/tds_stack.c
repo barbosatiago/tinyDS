@@ -170,6 +170,10 @@ bool tds_stack_peek(tds_stack_t instance, void *data) {
         return false;
     }
 
+    if (!instance->size == 0) {
+        return false;
+    }
+
     memcpy(data, instance->top->data, instance->elements);
     return true;
 }
@@ -221,7 +225,7 @@ bool tds_stack_destroy(tds_stack_t instance) {
     }
 
     if (instance->size > 0) {
-        while (!instance->top) {
+        while (instance->top) {
             tds_stack_remove_pop(instance);
         }
     }
