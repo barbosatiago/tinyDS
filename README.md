@@ -16,7 +16,7 @@ The library is written in **C**, following best practices for **low-level memory
 
 ## TODO List  
 
-### 🟢 **Queue (FIFO)**  
+### **Queue (FIFO)**  
 ✅ Basic queue operations (`create`, `enqueue`, `dequeue`, `peek`, `size`, `empty`).  
 🔲 Implement `tds_queue_destroy(instance)` – Free allocated memory.  
 🔲 Implement `tds_queue_clear(instance)` – Remove all elements without deallocating memory.  
@@ -27,32 +27,32 @@ The library is written in **C**, following best practices for **low-level memory
    - `tds_queue_enqueue_threadsafe(instance, data)`  
    - `tds_queue_dequeue_threadsafe(instance, data)`  
 
-### 🟠 **Stack (LIFO)**  
+### **Stack (LIFO)**  
 🔲 Implement basic stack operations (`create`, `push`, `pop`, `peek`, `size`, `empty`).  
 🔲 Implement `tds_stack_destroy(instance)` – Free allocated memory.  
 🔲 Implement thread-safe stack operations.  
 
-### 🔵 **Hashtable**  
+### **Hashtable**  
 🔲 Implement hash table with open addressing or chaining.  
 🔲 Support for custom hash functions.  
 🔲 Implement thread-safe operations.  
 
-### 🟣 **Linked List**  
+### **Linked List**  
 🔲 Implement singly and doubly linked lists.  
 🔲 Support `insert`, `remove`, `find`, `size` functions.  
 🔲 Implement `tds_list_destroy(instance)` – Free all nodes.  
 
-### 🟡 **Ring Buffer**  
+### **Ring Buffer**  
 🔲 Implement circular buffer operations.  
 🔲 Support for static and dynamic allocation.  
 
-### 🟤 **Memory Management**  
+### **Memory Management**  
 🔲 Implement custom memory allocator for embedded systems.  
 🔲 Implement memory pool management.  
 
 ---
 
-### 🔥 **Future Improvements**  
+### **Future Improvements**  
 - Optimize memory usage in all data structures.  
 - Add unit tests for all implementations.  
 - Improve documentation with examples.  
